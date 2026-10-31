@@ -1,0 +1,1415 @@
+
+
+<!DOCTYPE html>
+
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="theme-color" content="#172554">
+
+<title>Vokal Stüdyom</title>
+
+<style>
+
+:root {
+
+  color-scheme: dark;
+
+  --bg: #0b1220;
+
+  --panel: #152238;
+
+  --text: #f4f7fb;
+
+  --muted: #c1ccda;
+
+  --accent: #70d6c4;
+
+  --border: #496078;
+
+}
+
+* {
+
+  box-sizing: border-box;
+
+}
+
+body {
+
+  margin: 0;
+
+  background: var(--bg);
+
+  color: var(--text);
+
+  font-family: system-ui, sans-serif;
+
+  font-size: 17px;
+
+  line-height: 1.55;
+
+}
+
+header {
+
+  background: #172554;
+
+  padding: 22px 17px;
+
+  border-bottom: 2px solid var(--accent);
+
+}
+
+h1 {
+
+  margin: 0;
+
+  font-size: 1.7rem;
+
+}
+
+header p {
+
+  margin-bottom: 0;
+
+}
+
+main {
+
+  max-width: 850px;
+
+  margin: auto;
+
+  padding: 15px;
+
+}
+
+section {
+
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  padding: 17px;
+
+  margin-bottom: 17px;
+
+}
+
+h2 {
+
+  font-size: 1.25rem;
+
+  margin-top: 0;
+
+}
+
+.help {
+
+  color: var(--muted);
+
+  font-size: .93rem;
+
+}
+
+button {
+
+  background: #245b68;
+
+  color: white;
+
+  border: 2px solid var(--accent);
+
+  border-radius: 10px;
+
+  padding: 12px 16px;
+
+  min-height: 48px;
+
+  font-size: 16px;
+
+  font-weight: 650;
+
+  margin: 5px 4px 5px 0;
+
+}
+
+button:disabled {
+
+  opacity: .45;
+
+}
+
+button:focus-visible,
+
+input:focus-visible {
+
+  outline: 3px solid #ffd166;
+
+  outline-offset: 3px;
+
+}
+
+.primary {
+
+  background: #176b5c;
+
+}
+
+.danger {
+
+  background: #63343b;
+
+}
+
+label {
+
+  display: block;
+
+  font-weight: bold;
+
+  margin-bottom: 5px;
+
+}
+
+input[type="range"] {
+
+  width: 100%;
+
+  min-height: 35px;
+
+  accent-color: var(--accent);
+
+}
+
+input[type="file"] {
+
+  display: block;
+
+  max-width: 100%;
+
+  margin: 12px 0;
+
+}
+
+audio {
+
+  width: 100%;
+
+  margin-top: 12px;
+
+}
+
+.control {
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid var(--border);
+
+}
+
+output {
+
+  display: inline-block;
+
+  min-width: 70px;
+
+  color: var(--accent);
+
+  font-weight: bold;
+
+}
+
+.status {
+
+  background: #203b4b;
+
+  padding: 11px;
+
+  border-left: 4px solid var(--accent);
+
+  border-radius: 6px;
+
+}
+
+[hidden] {
+
+  display: none !important;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>Vokal Stüdyom</h1>
+
+  <p>Türkçe ve erişilebilir çevrim içi ses stüdyosu</p>
+
+</header>
+
+<main>
+
+<section>
+
+  <h2>1. Ses dosyası ve kayıt</h2>
+
+  <p class="help">
+
+    Cihazından bir ses dosyası seçebilir veya mikrofonunu
+
+    kullanarak yeni kayıt yapabilirsin.
+
+  </p>
+
+  <label for="audioFile">Ses dosyası seç</label>
+
+  <input id="audioFile" type="file" accept="audio/*">
+
+  <button id="recordStart" class="primary">
+
+    Kaydı başlat
+
+  </button>
+
+  <button id="recordStop" disabled>
+
+    Kaydı bitir
+
+  </button>
+
+  <button id="clearFile" class="danger">
+
+    Dosyayı temizle
+
+  </button>
+
+  <p id="sourceStatus" class="status"
+
+     role="status" aria-live="polite">
+
+    Henüz ses yüklenmedi.
+
+  </p>
+
+  <audio id="player" controls preload="metadata"
+
+         aria-label="Ses oynatıcı" hidden>
+
+  </audio>
+
+</section>
+
+<section>
+
+  <h2>2. Dinleme kontrolleri</h2>
+
+  <p class="help">
+
+    Orijinal ses efekt uygulanmadan, işlenmiş ses ise
+
+    seçtiğin ayarlarla çalınır.
+
+  </p>
+
+  <button id="originalButton">
+
+    Orijinal sesi dinle
+
+  </button>
+
+  <button id="processedButton" class="primary">
+
+    İşlenmiş sesi dinle
+
+  </button>
+
+  <button id="stopButton">
+
+    Durdur
+
+  </button>
+
+  <p id="playStatus" class="status"
+
+     role="status" aria-live="polite">
+
+    Dinleme için ses yükle.
+
+  </p>
+
+</section>
+
+<section>
+
+  <h2>3. Ses ayarları ve efektler</h2>
+
+  <div class="control">
+
+    <label for="volume">Genel ses seviyesi</label>
+
+    <p class="help">
+
+      Çıkış sesinin yüksekliğini belirler.
+
+    </p>
+
+    <input id="volume" type="range"
+
+      min="0" max="150" value="100">
+
+    <output id="volumeValue">100%</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="lowcut">Low-cut filtresi</label>
+
+    <p class="help">
+
+      Düşük frekanslı uğultuları azaltır.
+
+      Sıfır değeri filtreyi kapatır.
+
+    </p>
+
+    <input id="lowcut" type="range"
+
+      min="0" max="200" step="10" value="0">
+
+    <output id="lowcutValue">Kapalı</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="bass">Bas seviyesi</label>
+
+    <p class="help">
+
+      Sese kalınlık ve dolgunluk kazandırır.
+
+      Fazla yükseltilmesi sesi bulanıklaştırabilir.
+
+    </p>
+
+    <input id="bass" type="range"
+
+      min="-12" max="12" value="0">
+
+    <output id="bassValue">0 dB</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="mid">Orta frekans seviyesi</label>
+
+    <p class="help">
+
+      Vokal gövdesini ve sesin anlaşılabilirliğini etkiler.
+
+    </p>
+
+    <input id="mid" type="range"
+
+      min="-12" max="12" value="0">
+
+    <output id="midValue">0 dB</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="presence">Tiz ve varlık seviyesi</label>
+
+    <p class="help">
+
+      Vokal ayrıntılarını ve sesin öne çıkmasını etkiler.
+
+    </p>
+
+    <input id="presence" type="range"
+
+      min="-12" max="12" value="0">
+
+    <output id="presenceValue">0 dB</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="compressor">Kompresör</label>
+
+    <p class="help">
+
+      Yüksek sesli bölümleri kontrol ederek
+
+      ses seviyesini dengeler.
+
+    </p>
+
+    <input id="compressor" type="range"
+
+      min="0" max="100" value="0">
+
+    <output id="compressorValue">Kapalı</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="reverb">Reverb miktarı</label>
+
+    <p class="help">
+
+      Sese oda veya salon yankısı kazandırır.
+
+    </p>
+
+    <input id="reverb" type="range"
+
+      min="0" max="60" value="0">
+
+    <output id="reverbValue">Kapalı</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="echo">Eko miktarı</label>
+
+    <p class="help">
+
+      Sesin tekrar ederek duyulmasını sağlar.
+
+    </p>
+
+    <input id="echo" type="range"
+
+      min="0" max="50" value="0">
+
+    <output id="echoValue">Kapalı</output>
+
+  </div>
+
+  <div class="control">
+
+    <label for="echoTime">Eko tekrar aralığı</label>
+
+    <p class="help">
+
+      Tekrarların arasındaki süreyi belirler.
+
+    </p>
+
+    <input id="echoTime" type="range"
+
+      min="100" max="800" step="10" value="300">
+
+    <output id="echoTimeValue">300 ms</output>
+
+  </div>
+
+  <button id="resetButton" class="danger">
+
+    Bütün efektleri sıfırla
+
+  </button>
+
+</section>
+
+<section>
+
+  <h2>4. İşlenmiş sesi dışa aktarma</h2>
+
+  <p class="help">
+
+    İşlenmiş sesi çalarken kayıt düğmesine bas.
+
+    Ses çalarken kayıt alınır. Kayıt bittiğinde
+
+    dosyanı cihazına indirebilirsin.
+
+  </p>
+
+  <button id="exportButton" disabled>
+
+    Dışa aktarmayı başlat
+
+  </button>
+
+  <p id="exportStatus" class="status"
+
+     role="status" aria-live="polite">
+
+    Henüz dışa aktarma yapılmadı.
+
+  </p>
+
+</section>
+
+<section>
+
+  <h2>5. Sürüm bilgisi</h2>
+
+  <p>
+
+    Bu sürümde temel kayıt, dosya yükleme,
+
+    ses dinleme, EQ, kompresör, reverb ve eko
+
+    özellikleri bulunmaktadır.
+   </p>
+
+  <p>
+
+    Gelişmiş yapay zekâ analizi, pitch correction,
+
+    formant, gelişmiş gürültü temizleme ve mastering
+
+    sonraki sürümlerde ele alınacaktır.
+
+  </p>
+
+</section>
+
+</main>
+
+<script>
+
+(() => {
+
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const player = $("player");
+
+let audioContext = null;
+
+let mediaSource = null;
+
+let audioNodes = null;
+
+let fileURL = null;
+
+let microphoneRecorder = null;
+
+let microphoneStream = null;
+
+let microphoneChunks = [];
+
+let exportRecorder = null;
+
+let exportStream = null;
+
+let exportChunks = [];
+
+let exporting = false;
+
+function status(id, message) {
+
+  $(id).textContent = message;
+
+}
+
+function makeImpulse(context) {
+
+  const duration = 2;
+
+  const length = context.sampleRate * duration;
+
+  const impulse = context.createBuffer(
+
+    2, length, context.sampleRate
+
+  );
+
+  for (let channel = 0; channel < 2; channel++) {
+
+    const data = impulse.getChannelData(channel);
+
+    for (let i = 0; i < length; i++) {
+
+      const fade = Math.pow(1 - i / length, 2.5);
+
+      data[i] = (Math.random() * 2 - 1) * fade;
+
+    }
+
+  }
+
+  return impulse;
+
+}
+
+async function prepareAudio() {
+
+  if (!player.src) {
+
+    throw new Error("Önce ses dosyası seçmelisin.");
+
+  }
+
+  if (!audioContext) {
+
+    audioContext = new (
+
+      window.AudioContext ||
+
+      window.webkitAudioContext
+
+    )();
+
+  }
+
+  if (audioContext.state === "suspended") {
+
+    await audioContext.resume();
+
+  }
+
+  if (mediaSource) {
+
+    return;
+
+  }
+
+  mediaSource =
+
+    audioContext.createMediaElementSource(player);
+
+  const context = audioContext;
+
+  const input = context.createGain();
+
+  const original = context.createGain();
+
+  const processed = context.createGain();
+
+  const low = context.createBiquadFilter();
+
+  low.type = "highpass";
+
+  const bass = context.createBiquadFilter();
+
+  bass.type = "lowshelf";
+
+  bass.frequency.value = 120;
+
+  const mid = context.createBiquadFilter();
+
+  mid.type = "peaking";
+
+  mid.frequency.value = 1000;
+
+  mid.Q.value = 0.8;
+
+  const presence = context.createBiquadFilter();
+
+  presence.type = "highshelf";
+
+  presence.frequency.value = 3500;
+
+  const compressor = context.createDynamicsCompressor();
+
+  const delay = context.createDelay(1);
+
+  const feedback = context.createGain();
+
+  const echoWet = context.createGain();
+
+  const dry = context.createGain();
+
+  const convolver = context.createConvolver();
+
+  const reverbWet = context.createGain();
+
+  const master = context.createGain();
+
+  convolver.buffer = makeImpulse(context);
+
+  delay.delayTime.value = 0.3;
+
+  feedback.gain.value = 0.25;
+
+  mediaSource.connect(input);
+
+  input.connect(original);
+
+  original.connect(master);
+
+  input.connect(low);
+
+  low.connect(bass);
+
+  bass.connect(mid);
+
+  mid.connect(presence);
+
+  presence.connect(compressor);
+
+  compressor.connect(dry);
+
+  dry.connect(processed);
+
+  compressor.connect(delay);
+
+  delay.connect(feedback);
+
+  feedback.connect(delay);
+
+  delay.connect(echoWet);
+
+  echoWet.connect(processed);
+
+  compressor.connect(convolver);
+
+  convolver.connect(reverbWet);
+
+  reverbWet.connect(processed);
+
+  processed.connect(master);
+
+  master.connect(context.destination);
+
+  exportStream = context.createMediaStreamDestination();
+
+  master.connect(exportStream);
+
+  audioNodes = {
+
+    input,
+
+    original,
+
+    processed,
+
+    low,
+
+    bass,
+
+    mid,
+
+    presence,
+
+    compressor,
+
+    delay,
+
+    feedback,
+
+    echoWet,
+
+    dry,
+
+    convolver,
+
+    reverbWet,
+
+    master
+
+  };
+
+  updateEffects();
+
+  chooseMode("processed");
+
+  status(
+
+    "playStatus",
+
+    "Ses işleme motoru hazır."
+
+  );
+
+}
+
+function chooseMode(mode) {
+
+  if (!audioNodes) return;
+
+  const now = audioContext.currentTime;
+
+  if (mode === "original") {
+
+    audioNodes.original.gain.setTargetAtTime(
+
+      1, now, 0.02
+
+    );
+
+    audioNodes.processed.gain.setTargetAtTime(
+
+      0, now, 0.02
+
+    );
+
+  } else {
+
+    audioNodes.original.gain.setTargetAtTime(
+
+      0, now, 0.02
+
+    );
+
+    audioNodes.processed.gain.setTargetAtTime(
+
+      1, now, 0.02
+
+    );
+
+  }
+
+}
+
+function updateEffects() {
+
+  if (!audioNodes || !audioContext) return;
+
+  const value = id => Number($(id).value);
+
+  const now = audioContext.currentTime;
+
+  const n = audioNodes;
+
+  n.master.gain.setTargetAtTime(
+
+    value("volume") / 100, now, 0.02
+
+  );
+
+  n.low.frequency.setTargetAtTime(
+
+    value("lowcut") || 10, now, 0.02
+
+  );
+
+  n.bass.gain.setTargetAtTime(
+
+    value("bass"), now, 0.02
+
+  );
+
+  n.mid.gain.setTargetAtTime(
+
+    value("mid"), now, 0.02
+
+  );
+
+  n.presence.gain.setTargetAtTime(
+
+    value("presence"), now, 0.02
+
+  );
+
+  const compression = value("compressor") / 100;
+
+  n.compressor.threshold.value =
+
+    -24 * compression;
+
+  n.compressor.ratio.value =
+
+    1 + compression * 7;
+
+  n.compressor.attack.value = 0.012;
+
+  n.compressor.release.value = 0.22;
+
+  const reverb = value("reverb") / 100;
+
+  n.reverbWet.gain.setTargetAtTime(
+
+    reverb * 0.7, now, 0.03
+
+  );
+
+  const echo = value("echo") / 100;
+
+  n.echoWet.gain.setTargetAtTime(
+
+    echo * 0.65, now, 0.03
+
+  );
+
+  n.dry.gain.setTargetAtTime(
+
+    1 - echo * 0.15, now, 0.03
+
+  );
+
+  n.delay.delayTime.setTargetAtTime(
+
+    value("echoTime") / 1000, now, 0.03
+
+  );
+
+}
+
+const controls = {
+
+  volume: v => v + "%",
+
+  lowcut: v => v == 0 ? "Kapalı" : v + " Hz",
+
+  bass: v => v + " dB",
+
+  mid: v => v + " dB",
+
+  presence: v => v + " dB",
+
+  compressor: v => v == 0 ? "Kapalı" : v + "%",
+
+  reverb: v => v == 0 ? "Kapalı" : v + "%",
+
+  echo: v => v == 0 ? "Kapalı" : v + "%",
+
+  echoTime: v => v + " ms"
+
+};
+
+Object.keys(controls).forEach(id => {
+
+  $(id).addEventListener("input", event => {
+
+    $(id + "Value").textContent =
+
+      controls[id](event.target.value);
+
+    updateEffects();
+
+  });
+
+});
+
+function loadFile(blob, name) {
+
+  if (fileURL) {
+
+    URL.revokeObjectURL(fileURL);
+
+  }
+
+  fileURL = URL.createObjectURL(blob);
+
+  player.src = fileURL;
+
+  player.hidden = false;
+
+  player.load();
+
+  status(
+
+    "sourceStatus",
+
+    name + " yüklendi."
+
+  );
+
+  $("exportButton").disabled = false;
+
+  mediaSource = null;
+
+  audioNodes = null;
+
+}
+
+$("audioFile").addEventListener("change", event => {
+
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  if (!file.type.startsWith("audio/")) {
+
+    status(
+
+      "sourceStatus",
+
+      "Lütfen desteklenen bir ses dosyası seç."
+
+    );
+
+    return;
+
+  }
+
+  loadFile(file, file.name);
+
+});
+
+$("recordStart").addEventListener("click", async () => {
+
+  try {
+
+    microphoneStream =
+
+      await navigator.mediaDevices.getUserMedia({
+
+        audio: true
+
+      });
+
+    microphoneChunks = [];
+
+    microphoneRecorder =
+
+      new MediaRecorder(microphoneStream);
+
+    microphoneRecorder.ondataavailable = event => {
+
+      if (event.data.size > 0) {
+
+        microphoneChunks.push(event.data);
+
+      }
+
+    };
+
+    microphoneRecorder.onstop = () => {
+
+      const blob = new Blob(microphoneChunks, {
+
+        type: microphoneRecorder.mimeType ||
+
+          "audio/webm"
+
+      });
+
+      loadFile(blob, "Mikrofon kaydı");
+
+      microphoneStream.getTracks().forEach(track => {
+
+        track.stop();
+
+      });
+
+      microphoneStream = null;
+
+    };
+
+    microphoneRecorder.start();
+
+    $("recordStart").disabled = true;
+
+    $("recordStop").disabled = false;
+
+    status("sourceStatus", "Kayıt başladı.");
+
+  } catch (error) {
+
+    status(
+
+      "sourceStatus",
+
+      "Mikrofon açılamadı: " + error.message
+
+    );
+
+  }
+
+});
+
+$("recordStop").addEventListener("click", () => {
+
+  if (
+
+    microphoneRecorder &&
+
+    microphoneRecorder.state !== "inactive"
+
+  ) {
+
+    microphoneRecorder.stop();
+
+  }
+
+  $("recordStart").disabled = false;
+
+  $("recordStop").disabled = true;
+
+  status(
+
+    "sourceStatus",
+
+    "Kayıt tamamlanıyor."
+
+  );
+
+});
+
+$("originalButton").addEventListener("click", async () => {
+
+  try {
+
+    await prepareAudio();
+
+    chooseMode("original");
+
+    await player.play();
+
+    status("playStatus", "Orijinal ses çalıyor.");
+
+  } catch (error) {
+
+    status("playStatus", error.message);
+
+  }
+
+});
+
+$("processedButton").addEventListener("click", async () => {
+
+  try {
+
+    await prepareAudio();
+
+    chooseMode("processed");
+
+    updateEffects();
+
+    await player.play();
+
+    status("playStatus", "İşlenmiş ses çalıyor.");
+
+  } catch (error) {
+
+    status("playStatus", error.message);
+
+  }
+
+});
+
+$("stopButton").addEventListener("click", () => {
+
+  player.pause();
+
+  player.currentTime = 0;
+
+  status("playStatus", "Oynatma durduruldu.");
+
+});
+
+$("clearFile").addEventListener("click", () => {
+
+  player.pause();
+
+  player.removeAttribute("src");
+
+  player.load();
+
+  player.hidden = true;
+
+  $("audioFile").value = "";
+
+  $("exportButton").disabled = true;
+
+  if (fileURL) {
+
+    URL.revokeObjectURL(fileURL);
+
+    fileURL = null;
+
+  }
+
+  mediaSource = null;
+
+  audioNodes = null;
+
+  status("sourceStatus", "Dosya temizlendi.");
+
+  status("playStatus", "Yeni ses bekleniyor.");
+
+});
+ $("resetButton").addEventListener("click", () => {
+
+  const defaults = {
+
+    volume: 100,
+
+    lowcut: 0,
+
+    bass: 0,
+
+    mid: 0,
+
+    presence: 0,
+
+    compressor: 0,
+
+    reverb: 0,
+
+    echo: 0,
+
+    echoTime: 300
+
+  };
+
+  Object.keys(defaults).forEach(id => {
+
+    $(id).value = defaults[id];
+
+    $(id + "Value").textContent =
+
+      controls[id](defaults[id]);
+
+  });
+
+  updateEffects();
+
+  status(
+
+    "playStatus",
+
+    "Bütün efekt ayarları sıfırlandı."
+
+  );
+
+});
+
+$("exportButton").addEventListener("click", async () => {
+
+  if (exporting) {
+
+    if (exportRecorder &&
+
+        exportRecorder.state === "recording") {
+
+      exportRecorder.stop();
+
+    }
+
+    return;
+
+  }
+
+  try {
+
+    await prepareAudio();
+
+    const stream = exportStream.stream;
+
+    const mime =
+
+      MediaRecorder.isTypeSupported(
+
+        "audio/webm;codecs=opus"
+
+      )
+
+        ? "audio/webm;codecs=opus"
+
+        : "audio/webm";
+
+    exportChunks = [];
+
+    exportRecorder = new MediaRecorder(stream, {
+       mimeType: mime
+
+    });
+
+    exportRecorder.ondataavailable = event => {
+
+      if (event.data.size > 0) {
+
+        exportChunks.push(event.data);
+
+      }
+
+    };
+
+    exportRecorder.onstop = () => {
+
+      const blob = new Blob(exportChunks, {
+
+        type: mime
+
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.download = "vokal-studyom-islenmis.webm";
+
+      link.click();
+
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+      exporting = false;
+
+      $("exportButton").textContent =
+
+        "Dışa aktarmayı başlat";
+
+      status(
+
+        "exportStatus",
+
+        "İşlenmiş ses dosyası oluşturuldu."
+
+      );
+
+    };
+
+    exportRecorder.start();
+
+    exporting = true;
+
+    $("exportButton").textContent =
+
+      "Dışa aktarmayı bitir";
+
+    status(
+
+      "exportStatus",
+
+      "Kayıt başladı. İşlenmiş sesi çal."
+
+    );
+
+  } catch (error) {
+
+    status(
+
+      "exportStatus",
+       "Dışa aktarma başlatılamadı: " +
+
+      error.message
+
+    );
+
+  }
+
+});
+
+player.addEventListener("ended", () => {
+
+  status("playStatus", "Oynatma tamamlandı.");
+
+});
+
+})();
+
+</script>
+
+</body>
+
+</html>
